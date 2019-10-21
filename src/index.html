@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>webpack test</title>
+  <style>
+    @keyframes spinner { to { transform: rotate(1turn) } }
+    .loading:before {
+      content: ''; box-sizing: border-box; width: 64px; height: 64px;
+      position: fixed; z-index: 99; top: 0; left: 0; bottom: 0; right: 0;
+      margin: auto; border-radius: 50%; border: 4px solid #f0f0f0;
+      border-top-color: #BE0028; animation: spinner .6s linear infinite;
+    }
+  </style>
+  <!-- <link type="image/x-icon" rel="shortcut icon" href="/assets/favicon.ico" /> -->
+</head>
+<body class="__body__ loading">
+  <div id="root"></div>
+</body>
+</html>

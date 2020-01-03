@@ -1,5 +1,5 @@
-import home from './home.js'
+import home from './home.js';
 
 export default {
   ...home
-}
+};

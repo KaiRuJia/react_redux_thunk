@@ -4,7 +4,7 @@ const common = require('./webpack.common.js');
 
 module.exports = merge(common,{
     mode:'development',
-    devtool: 'source-map',
+    devtool: 'source',
     // 配置webpack开发服务功能
     devServer: {
         // contentBase:path.resolve(__dirname,'../dist'),//告诉服务器从哪提供内容，只有在想要提供静态文件时才需要

@@ -42,9 +42,24 @@ module.exports = {
                             ["@babel/plugin-proposal-decorators",{"legacy": true}],
                             ["@babel/plugin-proposal-class-properties", {"loose": true}],
                             ["@babel/plugin-proposal-object-rest-spread", { "loose": true, "useBuiltIns": true }],
-                            ["import", { libraryName: "antd-mobile", style: "css" }] // `style: true` 会加载 less 文件
+                            ['import',{ libraryName:'antd',style:"css" },'antd'],
+                            ['import',{ libraryName:'antd-mobile',style:"css" },'antd-mobile']
                         ]
-                    }
+                    },
+                }
+            },
+            {
+                test: /\.(js|jsx)$/,
+                loader: 'eslint-loader',
+                enforce: "pre", // 在webpack编译之前进行检测
+                // include: [path.resolve(__dirname, 'src')], // 指定检查的目录
+                exclude: [                // 除去node_modules
+                  path.resolve(__dirname, '../node_modules')
+                ],
+                options: { // 这里的配置项参数将会被传递到 eslint 的 CLIEngine 
+                    formatter: require('eslint-friendly-formatter'), // 指定错误报告的格式规范
+                    emitWarning: true,
+                    fix: true
                 }
             },
             {

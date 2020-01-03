@@ -2,7 +2,7 @@ import React,{ Component } from "react";
 import Style from './style.less';
 import { Button } from 'antd-mobile';
 import { connect } from "react-redux";
-import { setName,setSex } from '../../redux/action/home.js';
+import { setName,setSex } from '@redux/action/home.js';
 
 class Home extends Component{
   constructor(props) {

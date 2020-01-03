@@ -17,11 +17,10 @@ module.exports = {
     resolve:{
         extensions:['.js', '.jsx','.ts','.tsx', '.scss','.json','.css'],//自动解析确定的扩展,省去你引入组件时写后缀的麻烦
         alias: {//非常重要的一个配置，它可以配置一些短路径，
-          src :path.resolve(__dirname, '../src'),
-          components :path.resolve(__dirname, '../src/components'),
-          container:path.resolve(__dirname, '../src/container'),
-          image:path.resolve(__dirname, '../src/image'),
-          utils :path.resolve(__dirname, '../src/utils'),
+          "@component" :path.resolve(__dirname, '../src/component'),
+          "@pages" :path.resolve(__dirname, '../src/pages'),
+          "@redux":path.resolve(__dirname, '../src/redux'),
+          "@utils" :path.resolve(__dirname, '../src/utils'),
         },
         modules: ['node_modules'],//webpack 解析模块时应该搜索的目录，
     },

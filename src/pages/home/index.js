@@ -21,11 +21,11 @@ class Home extends Component {
       <div className={Style.home}>
         <p>测试环境</p>
         <p>
-姓名：
+          姓名：
           {this.props.name}
         </p>
         <p>
-性别：
+          性别：
           {this.props.sex}
         </p>
         <Button onClick={() => this.props.dispatch(setName('里斯'))}>改变姓名</Button>

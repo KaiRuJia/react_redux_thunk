@@ -52,14 +52,11 @@ module.exports = {
                 test: /\.(js|jsx)$/,
                 loader: 'eslint-loader',
                 enforce: "pre", // 在webpack编译之前进行检测
-                // include: [path.resolve(__dirname, 'src')], // 指定检查的目录
-                exclude: [                // 除去node_modules
-                  path.resolve(__dirname, '../node_modules')
-                ],
+                exclude: /node_modules/,
                 options: { // 这里的配置项参数将会被传递到 eslint 的 CLIEngine 
                     formatter: require('eslint-friendly-formatter'), // 指定错误报告的格式规范
                     emitWarning: true,
-                    fix: true
+                    fix: true //启用 ESLint自动修复功能
                 }
             },
             {
@@ -81,7 +78,6 @@ module.exports = {
                             },
                         }
                     },
-                    { loader: "less-loader" },
                     {
                       loader: "postcss-loader",
                       options: {
@@ -90,7 +86,7 @@ module.exports = {
                           ]
                       }
                     },
-
+                    { loader: "less-loader" },
                 ]
             },
             {

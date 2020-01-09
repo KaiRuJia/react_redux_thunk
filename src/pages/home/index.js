@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { Button } from 'antd-mobile';
+import { Steps } from 'antd';
 import { connect } from 'react-redux';
 import { setName, setSex } from '@redux/action/home.js';
-import Style from './style.less';
+import Style from './index.less';
+
+const { Step } = Steps;
 
 class Home extends Component {
   constructor(props) {
@@ -30,6 +33,11 @@ class Home extends Component {
         </p>
         <Button onClick={() => this.props.dispatch(setName('里斯'))}>改变姓名</Button>
         <Button onClick={() => this.props.dispatch(setSex(2000))}>改变性别</Button>
+        <Steps current={1}>
+          <Step title="Finished" description="This is a description." />
+          <Step title="In Progress" subTitle="Left 00:00:08" description="This is a description." />
+          <Step title="Waiting" description="This is a description." />
+        </Steps>
       </div>
     );
   }

@@ -4,7 +4,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin') // css 压缩
 const webpack = require('webpack')
 const NODE_ENV = process.env.NODE_ENV="development" ? true : false
-const theme = require(path.resolve(__dirname, '../src/commonStyle/theme.js'))
+const theme = require(path.resolve(__dirname, '../src/static/comcss/theme.js'))
 
 module.exports = {
   entry:{
@@ -12,14 +12,15 @@ module.exports = {
   },
   output:{
     path:path.resolve(__dirname,'../build'),
-    publicPath:NODE_ENV?'/':'/assets/',// cdn
+    // publicPath:NODE_ENV?'/':'/assets/',// cdn
+    publicPath:'./',// cdn
     filename:'[name].[hash].js' 
   },
   resolve:{
     extensions:['.js', '.jsx','.ts','.tsx', '.scss','.json','.css'],//自动解析确定的扩展,省去你引入组件时写后缀的麻烦
     alias: {//非常重要的一个配置，它可以配置一些短路径，
       "@component" :path.resolve(__dirname, '../src/component'),
-      "@commonStyle" :path.resolve(__dirname, '../src/commonStyle'),
+      "@static" :path.resolve(__dirname, '../src/static'),
       "@pages" :path.resolve(__dirname, '../src/pages'),
       "@redux":path.resolve(__dirname, '../src/redux'),
       "@utils" :path.resolve(__dirname, '../src/utils'),
@@ -78,12 +79,12 @@ module.exports = {
           },
           {
             loader:'css-loader', //  负责读取css文件 放在后面的先被解析
-            options:{
-              importLoaders: 1,
-              modules: {
-                localIdentName: '[name]__[local]__[hash:base64:5]',
-              },
-            }
+            // options:{
+            //   importLoaders: 1,
+            //   modules: {
+            //     localIdentName: '[name]__[local]__[hash:base64:5]',
+            //   },
+            // }
           },
           {
             loader: "postcss-loader",
@@ -143,11 +144,18 @@ module.exports = {
       },
       {
         test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        use: 'url-loader?limit=10000&mimetype=application/font-woff'
+        use: 'url-loader'
       },
       {
-        test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        use: 'file-loader'
+        test: /\.(woff|woff2|svg|ttf|eot)$/,
+        use:[
+          {
+            loader:'file-loader',
+            options:{
+              name:'static/fonts/[name].[ext]'
+            }
+          }//项目设置打包到dist下的fonts文件夹下
+       ]
       }
     ]
   },
@@ -184,10 +192,10 @@ module.exports = {
       inject: true,//所有JavaScript资源插入到body元素的底部
       template: path.resolve('./src', 'index.html'),
       filename: 'index.html',
-      minify:{ //压缩HTML文件
-        removeComments:true,    //移除HTML中的注释
-        collapseWhitespace:true    //删除空白符与换行符
-      }
+      // minify:{ //压缩HTML文件
+      //   removeComments:true,    //移除HTML中的注释
+      //   collapseWhitespace:true    //删除空白符与换行符
+      // }
       // hash: true, // 会在打包好的bundle.js后面加上hash串,
     }),
     new webpack.HashedModuleIdsPlugin(),

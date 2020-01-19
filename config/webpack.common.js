@@ -69,7 +69,8 @@ module.exports = {
         ]
       },
       {
-        test: /\.css$/,
+        test: [/\.css$/, /\.less$/],
+        exclude:[/node_modules/, /static/],
         use: [
           {
             loader: true ? 'style-loader' : MiniCssExtractPlugin.loader,//css内容注入到js里面去 MiniCssExtractPlugin.loader 将css样式统一打包进一个css文件，然后以link标签的形式嵌入页面进行资源请求
@@ -79,12 +80,12 @@ module.exports = {
           },
           {
             loader:'css-loader', //  负责读取css文件 放在后面的先被解析
-            // options:{
-            //   importLoaders: 1,
-            //   modules: {
-            //     localIdentName: '[name]__[local]__[hash:base64:5]',
-            //   },
-            // }
+            options:{
+              importLoaders: 1,
+              modules: {
+                localIdentName: '[name]__[local]__[hash:base64:5]',
+              },
+            }
           },
           {
             loader: "postcss-loader",
@@ -94,10 +95,19 @@ module.exports = {
               ]
             }
           },
+          { 
+            loader: "less-loader"
+          }
         ]
       },
       {
-        test: /\.less$/,
+        test: [/\.css$/], // 全局.css样式，和第三方库.css样式
+        include: [ /src/, /antd/,/antd-mobile/ ],
+        use: [ 'style-loader', 'css-loader']
+      },
+      {
+        test: /\.less$/, // 配置antd 的主题颜色
+        include: [/antd/,/antd-mobile/],
         use: [
           {
             loader: true ? 'style-loader' : MiniCssExtractPlugin.loader,//css内容注入到js里面去 MiniCssExtractPlugin.loader 将css样式统一打包进一个css文件，然后以link标签的形式嵌入页面进行资源请求

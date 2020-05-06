@@ -23,6 +23,7 @@ module.exports = {
       "@static" :path.resolve(__dirname, '../src/static'),
       "@pages" :path.resolve(__dirname, '../src/pages'),
       "@redux":path.resolve(__dirname, '../src/redux'),
+      "@store":path.resolve(__dirname, '../src/store'),
       "@utils" :path.resolve(__dirname, '../src/utils'),
     },
     modules: ['node_modules'],//webpack 解析模块时应该搜索的目录，
@@ -177,7 +178,7 @@ module.exports = {
         vendor: { // 项目基本框架等
           name:'vendor',  // 打包后的文件名，任意命名
           chunks: 'initial', // 代码块类型 必须三选一： "initial"（初始化） | "all"(默认就是all) | "async"（动态加载） 
-          test:/[\\/]node_modules[\\/]/, // 正则规则验证，如果符合就提取 chunk
+          test: /node_modules/, // 正则规则验证，如果符合就提取 chunk
           priority: 10, // 设置优先级，防止和自定义的公共代码提取时被覆盖，不进行打包
           enforce: true
         },

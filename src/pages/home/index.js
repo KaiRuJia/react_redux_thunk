@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 // import { Button } from 'antd-mobile';
 import { Steps, Button } from 'antd';
 import { connect } from 'react-redux';
-import { setName, setSex } from '@redux/action/home.js';
+import { setName, setSex } from '@store/home/action.js';
 import styles from './index.less';
 
 const { Step } = Steps;

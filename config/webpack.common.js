@@ -1,30 +1,30 @@
-const path = require("path")
+const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')//  配置模版html
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin') // css 压缩
 const webpack = require('webpack')
-const NODE_ENV = process.env.NODE_ENV="development" ? true : false
+const NODE_ENV = process.env.NODE_ENV='development' ? true : false
 const theme = require(path.resolve(__dirname, '../src/static/comcss/theme.js'))
 
 module.exports = {
   entry:{
-    index:path.resolve(__dirname, '../src/index.js'),
+    index: path.resolve(__dirname, '../src/index.js'),
   },
   output:{
-    path:path.resolve(__dirname,'../build'),
+    path: path.resolve(__dirname, '../build'),
     // publicPath:NODE_ENV?'/':'/assets/',// cdn
-    publicPath:'./',// cdn
-    filename:'[name].[hash].js' 
+    publicPath: './',// cdn
+    filename: '[name].[hash].js' 
   },
   resolve:{
-    extensions:['.js', '.jsx','.ts','.tsx', '.scss','.json','.css'],//自动解析确定的扩展,省去你引入组件时写后缀的麻烦
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.scss', '.json', '.css'],//自动解析确定的扩展,省去你引入组件时写后缀的麻烦
     alias: {//非常重要的一个配置，它可以配置一些短路径，
-      "@component" :path.resolve(__dirname, '../src/component'),
-      "@static" :path.resolve(__dirname, '../src/static'),
-      "@pages" :path.resolve(__dirname, '../src/pages'),
-      "@redux":path.resolve(__dirname, '../src/redux'),
-      "@store":path.resolve(__dirname, '../src/store'),
-      "@utils" :path.resolve(__dirname, '../src/utils'),
+      '@component': path.resolve(__dirname, '../src/component'),
+      '@static': path.resolve(__dirname, '../src/static'),
+      '@pages': path.resolve(__dirname, '../src/pages'),
+      '@redux': path.resolve(__dirname, '../src/redux'),
+      '@store': path.resolve(__dirname, '../src/store'),
+      '@utils': path.resolve(__dirname, '../src/utils'),
     },
     modules: ['node_modules'],//webpack 解析模块时应该搜索的目录，
   },
@@ -35,20 +35,20 @@ module.exports = {
         exclude: /node_modules/,
         use: [
           {
-            loader:'babel-loader?cacheDirectory=true',
+            loader: 'babel-loader?cacheDirectory=true',
             options: {
                 presets: [
-                    "@babel/preset-env",
-                    "@babel/preset-react"
+                    '@babel/preset-env',
+                    '@babel/preset-react'
                 ],
                 plugins: [
-                    "@babel/plugin-transform-runtime", 
-                    "@babel/plugin-syntax-dynamic-import",
-                    ["@babel/plugin-proposal-decorators",{"legacy": true}],
-                    ["@babel/plugin-proposal-class-properties", {"loose": true}],
-                    ["@babel/plugin-proposal-object-rest-spread", { "loose": true, "useBuiltIns": true }],
-                    ['import',{ libraryName:'antd',style: true },'antd'],
-                    ['import',{ libraryName:'antd-mobile',style: true },'antd-mobile']
+                    '@babel/plugin-transform-runtime', 
+                    '@babel/plugin-syntax-dynamic-import',
+                    ['@babel/plugin-proposal-decorators', { 'legacy': true} ],
+                    ['@babel/plugin-proposal-class-properties', { 'loose': true} ],
+                    ['@babel/plugin-proposal-object-rest-spread', { 'loose': true, 'useBuiltIns': true }],
+                    ['import', { libraryName: "antd", style: true }, 'antd'],
+                    ['import', { libraryName: 'antd-mobile', style: true }, 'antd-mobile']
                 ]
             },
           },
@@ -56,7 +56,7 @@ module.exports = {
       },
       {
         test: /\.js$/,
-        enforce: "pre", // 在webpack编译之前进行检测
+        enforce: 'pre', // 在webpack编译之前进行检测
         exclude: /node_modules/,
         use: [
           {
@@ -70,18 +70,25 @@ module.exports = {
         ]
       },
       {
-        test: [/\.css$/, /\.less$/],
-        exclude:[/node_modules/, /static/],
+        test: /\.css$/,
         use: [
+          { loader: true ? 'style-loader' : MiniCssExtractPlugin.loader },
           {
-            loader: true ? 'style-loader' : MiniCssExtractPlugin.loader,//css内容注入到js里面去 MiniCssExtractPlugin.loader 将css样式统一打包进一个css文件，然后以link标签的形式嵌入页面进行资源请求
-            options:{  
-              insertAt:'top'   //嵌入位置，top指顶部，不会覆盖掉html自带的style样式
+            loader: 'css-loader',
+            options: {
+              modules: false
             }
-          },
+          }
+        ]
+      },
+      {
+        test: /\.less$/,
+        include: path.resolve(__dirname, '../src'),
+        use: [
+          { loader: true ? 'style-loader' : MiniCssExtractPlugin.loader },
           {
-            loader:'css-loader', //  负责读取css文件 放在后面的先被解析
-            options:{
+            loader: 'css-loader', //  负责读取css文件 放在后面的先被解析
+            options: {
               importLoaders: 1,
               modules: {
                 localIdentName: '[name]__[local]__[hash:base64:5]',
@@ -89,45 +96,31 @@ module.exports = {
             }
           },
           {
-            loader: "postcss-loader",
+            loader: 'postcss-loader',
             options: {
               plugins: [
-                require("autoprefixer") 
+                require('autoprefixer') 
               ]
             }
           },
-          { 
-            loader: "less-loader"
+          {
+            loader: 'less-loader'
           }
         ]
       },
       {
-        test: [/\.css$/], // 全局.css样式，和第三方库.css样式
-        include: [ /src/, /antd/,/antd-mobile/ ],
-        use: [ 'style-loader', 'css-loader']
-      },
-      {
         test: /\.less$/, // 配置antd 的主题颜色
-        include: [/antd/,/antd-mobile/],
+        include: [/antd/, /antd-mobile/],
         use: [
           {
             loader: true ? 'style-loader' : MiniCssExtractPlugin.loader,//css内容注入到js里面去 MiniCssExtractPlugin.loader 将css样式统一打包进一个css文件，然后以link标签的形式嵌入页面进行资源请求
             options:{  
-              insertAt:'top'   //嵌入位置，top指顶部，不会覆盖掉html自带的style样式
+              insertAt: 'top'   //嵌入位置，top指顶部，不会覆盖掉html自带的style样式
             }
           },
-          {
-            loader:'css-loader'
-          },
-          {
-            loader: "postcss-loader",
-            options: {
-              plugins: [
-                  require("autoprefixer") 
-              ]
-            }
-          },
-          { loader: "less-loader",
+          { loader: 'css-loader' },
+          { 
+            loader: 'less-loader',
             options: {
               javascriptEnabled: true,    //允许通过js调用antd组件
               modifyVars: { ...theme }
@@ -161,9 +154,9 @@ module.exports = {
         test: /\.(woff|woff2|svg|ttf|eot)$/,
         use:[
           {
-            loader:'file-loader',
-            options:{
-              name:'static/fonts/[name].[ext]'
+            loader: 'file-loader',
+            options: {
+              name: 'static/fonts/[name].[ext]'
             }
           }//项目设置打包到dist下的fonts文件夹下
        ]
@@ -171,12 +164,12 @@ module.exports = {
     ]
   },
   optimization: { //优化
-    minimize:true,//true/false,告诉webpack是否开启代码最小化压缩，
-    removeEmptyChunks:true,//bool 值，它检测并删除空的块。将设置为false将禁用此优化，
+    minimize: true,//true/false,告诉webpack是否开启代码最小化压缩，
+    removeEmptyChunks: true,//bool 值，它检测并删除空的块。将设置为false将禁用此优化，
     splitChunks: {
       cacheGroups: { //自定义配置决定生成的文件,缓存策略
         vendor: { // 项目基本框架等
-          name:'vendor',  // 打包后的文件名，任意命名
+          name: 'vendor',  // 打包后的文件名，任意命名
           chunks: 'initial', // 代码块类型 必须三选一： "initial"（初始化） | "all"(默认就是all) | "async"（动态加载） 
           test: /node_modules/, // 正则规则验证，如果符合就提取 chunk
           priority: 10, // 设置优先级，防止和自定义的公共代码提取时被覆盖，不进行打包

@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Steps, Button } from 'antd';
 import { connect } from 'react-redux';
 import { setName, setSex } from '@store/home/action.js';
-import styles from './index.less';
+import './index.less';
 
 const { Step } = Steps;
 
@@ -21,7 +21,7 @@ class Home extends Component {
 
   render() {
     return (
-      <div className={styles.home}>
+      <div>
         <p>测试环境</p>
         <p>
           姓名：
@@ -32,7 +32,8 @@ class Home extends Component {
           <span className="iconfont iconhanbaobao" />
           {this.props.sex}
         </p>
-        <div className={styles['btn-wrap']}>
+        <div className="aaa">aaa</div>
+        <div>
           <Button type="primary" onClick={() => this.props.dispatch(setName('里斯'))}>改变姓名</Button>
         </div>
         <Button type="primary" onClick={() => this.props.dispatch(setSex(2000))}>改变性别</Button>

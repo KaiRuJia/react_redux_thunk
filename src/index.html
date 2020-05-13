@@ -15,6 +15,14 @@
   <!-- <link type="image/x-icon" rel="shortcut icon" href="/assets/favicon.ico" /> -->
 </head>
 <body class="__body__ loading">
+  <link rel="stylesheet/less" type="text/css" href="../build/theme/color.less" /><!--这里link放在哪，style生成在哪里，注意样式被覆盖-->
+  <script>
+      window.less = {
+          async: false,
+          env: 'production'//production  development
+      };
+  </script>
   <div id="root"></div>
+  <script src="https://cdn.bootcss.com/less.js/2.7.3/less.min.js"></script>
 </body>
 </html>

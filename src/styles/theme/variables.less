@@ -1,0 +1,12 @@
+// `vars.less`
+// 主要定义所有的要改变的颜色变量
+// 先引入antd的less变量
+@import "~antd/lib/style/themes/default.less";
+// 下面的变量就是上面colors.js注册的变量，一一对应，下面的会将antd同名的变量进行覆盖
+@primary-color: #00375B;
+@text-color-secondary: #eb2f96;
+// 下面这个自定义变量挺重要的，想要其它less文件支持主题更换，必须使用css自定义变量，下面会讲
+:root{
+    --primary: @primary-color;
+    --text-color-secondary: @text-color-secondary;
+}

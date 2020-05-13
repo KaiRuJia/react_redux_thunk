@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')//  配置模版html
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin') // css 压缩
 const webpack = require('webpack')
+const AntDesignThemePlugin = require('antd-theme-webpack-plugin');
 const NODE_ENV = process.env.NODE_ENV='development' ? true : false
 const theme = require(path.resolve(__dirname, '../src/static/comcss/theme.js'))
 
@@ -25,12 +26,13 @@ module.exports = {
       '@redux': path.resolve(__dirname, '../src/redux'),
       '@store': path.resolve(__dirname, '../src/store'),
       '@utils': path.resolve(__dirname, '../src/utils'),
+      '@styles': path.resolve(__dirname, '../src/styles'),
     },
     modules: ['node_modules'],//webpack 解析模块时应该搜索的目录，
   },
   module:{
     rules:[
-      { 
+      { // babel
         test: /\.js$/,
         exclude: /node_modules/,
         use: [
@@ -54,7 +56,7 @@ module.exports = {
           },
         ]
       },
-      {
+      { // eslist
         test: /\.js$/,
         enforce: 'pre', // 在webpack编译之前进行检测
         exclude: /node_modules/,
@@ -69,7 +71,7 @@ module.exports = {
           }
         ]
       },
-      {
+      { // css
         test: /\.css$/,
         use: [
           { loader: true ? 'style-loader' : MiniCssExtractPlugin.loader },
@@ -81,7 +83,7 @@ module.exports = {
           }
         ]
       },
-      {
+      { // less
         test: /\.less$/,
         include: path.resolve(__dirname, '../src'),
         use: [
@@ -108,7 +110,7 @@ module.exports = {
           }
         ]
       },
-      {
+      { // lessAntd lessAntdMobile
         test: /\.less$/, // 配置antd 的主题颜色
         include: [/antd/, /antd-mobile/],
         use: [
@@ -123,12 +125,12 @@ module.exports = {
             loader: 'less-loader',
             options: {
               javascriptEnabled: true,    //允许通过js调用antd组件
-              modifyVars: { ...theme }
+              // modifyVars: { ...theme }
             }
           },
         ]
       },
-      {
+      { // html
         test: /\.html$/,
         use: [{
           loader: 'html-loader',
@@ -137,7 +139,7 @@ module.exports = {
           }
         }]
       },
-      {
+      { // img
         test: /\.(jpe?g|png|gif)$/i,
         use: [
           'file-loader?hash=sha512&digest=hex&name=[hash].[ext]',
@@ -146,11 +148,11 @@ module.exports = {
           }
         ]
       },
-      {
+      { // font
         test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
         use: 'url-loader'
       },
-      {
+      { // font
         test: /\.(woff|woff2|svg|ttf|eot)$/,
         use:[
           {
@@ -191,7 +193,7 @@ module.exports = {
     }
   },
   plugins:[
-    new CleanWebpackPlugin(),// 删除文件 保留新文件
+    // new CleanWebpackPlugin(),// 删除文件 保留新文件
     new HtmlWebpackPlugin({
       inject: true,//所有JavaScript资源插入到body元素的底部
       template: path.resolve('./src', 'index.html'),
@@ -207,6 +209,19 @@ module.exports = {
       'process.env': {
         NODE_ENV: JSON.stringify('production'),
       },
+    }),
+    new AntDesignThemePlugin({
+      antDir: path.join(__dirname, '../node_modules/antd'),//antd包位置
+      stylesDir: path.join(__dirname, '../src/styles/theme'),//主题文件所在文件夹
+      varFile: path.join(__dirname, '../src/styles/theme/variables.less'),// 自定义默认的主题色
+      indexFileName: '../build/index.html', // index.html所在位置
+      mainLessFile: path.join(__dirname, '../src/styles/theme/index.less'), // 项目中其他自定义的样式（如果不需要动态修改其他样式，该文件可以为空）
+      outputFilePath: path.join(__dirname, '../build/theme/color.less'),//提取的less文件输出到什么地方
+      themeVariables: [ //要改变的主题变
+          '@primary-color',
+          '@text-color-secondary',
+      ],
+      generateOnce:false //是否只生成一次
     })
   ]
 }

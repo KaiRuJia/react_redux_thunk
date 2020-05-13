@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Steps, Button } from 'antd';
 import { connect } from 'react-redux';
 import { setName, setSex } from '@store/home/action.js';
-import './index.less';
+import styles from './index.less';
 
 const { Step } = Steps;
 
@@ -19,10 +19,26 @@ class Home extends Component {
     ];
   }
 
+  handleClick() {
+    window.less.modifyVars(// 更换主题颜色要这么写
+      {
+        '@primary-color': '#1DA57A',
+        '@btn-primary-bg': '#1DA57A'
+      }
+    ).then(() => {
+      console.log('success');
+    }).catch((error) => {
+      console.log(error);
+    });
+  }
+
   render() {
     return (
       <div>
-        <p>测试环境</p>
+        <div className={styles['major-fontColor']}>
+          <Button onClick={this.handleClick} type="primary">更换</Button>
+        </div>
+        <p className="test">测试环境</p>
         <p>
           姓名：
           {this.props.name}

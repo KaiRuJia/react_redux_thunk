@@ -5,8 +5,8 @@
   "main": "src/index.js",
   "private": true,
   "scripts": {
-    "dev": "NODE_ENV=development webpack-dev-server --config config/webpack.dev.js --progress --colors ",
-    "build": "NODE_ENV=product webpack --config config/webpack.prod.js"
+    "dev": "webpack-dev-server --config config/webpack.dev.js --progress --colors --mode=development",
+    "build": "webpack --config config/webpack.prod.js --mode=production"
   },
   "lint-staged": {
     "linters": {
@@ -54,6 +54,7 @@
     "less-loader": "^5.0.0",
     "mini-css-extract-plugin": "^0.8.0",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
+    "postcss-less": "^3.1.4",
     "postcss-loader": "^3.0.0",
     "react-css-modules": "^4.7.11",
     "react-redux": "^7.2.0",
@@ -74,6 +75,7 @@
     "antd": "^3.22.0",
     "antd-mobile": "^2.3.1",
     "axios": "^0.19.0",
+    "babel-plugin-react-css-modules": "^5.2.6",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "normalize.css": "^8.0.1",

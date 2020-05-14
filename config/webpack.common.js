@@ -4,8 +4,8 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin') // css 压缩
 const webpack = require('webpack')
 const AntDesignThemePlugin = require('antd-theme-webpack-plugin');
-const NODE_ENV = process.env.NODE_ENV='development' ? true : false
-const theme = require(path.resolve(__dirname, '../src/static/comcss/theme.js'))
+const dev_ENV = process.env.npm_lifecycle_script.split('--mode=')[1] == 'development'
+// const theme = require(path.resolve(__dirname, '../src/static/comcss/theme.js'))
 
 module.exports = {
   entry:{
@@ -22,7 +22,7 @@ module.exports = {
     alias: {//非常重要的一个配置，它可以配置一些短路径，
       '@component': path.resolve(__dirname, '../src/component'),
       '@static': path.resolve(__dirname, '../src/static'),
-      '@pages': path.resolve(__dirname, '../src/pages'),
+      '@container': path.resolve(__dirname, '../src/container'),
       '@redux': path.resolve(__dirname, '../src/redux'),
       '@store': path.resolve(__dirname, '../src/store'),
       '@utils': path.resolve(__dirname, '../src/utils'),
@@ -46,6 +46,14 @@ module.exports = {
                 plugins: [
                     '@babel/plugin-transform-runtime', 
                     '@babel/plugin-syntax-dynamic-import',
+                    [ 'react-css-modules', {
+                      'filetypes': {
+                        '.less': {
+                            "syntax": 'postcss-less'
+                        }
+                      },
+                      "generateScopedName": "[local]--[hash:base64:5]"
+                    }],
                     ['@babel/plugin-proposal-decorators', { 'legacy': true} ],
                     ['@babel/plugin-proposal-class-properties', { 'loose': true} ],
                     ['@babel/plugin-proposal-object-rest-spread', { 'loose': true, 'useBuiltIns': true }],
@@ -74,7 +82,7 @@ module.exports = {
       { // css
         test: /\.css$/,
         use: [
-          { loader: true ? 'style-loader' : MiniCssExtractPlugin.loader },
+          { loader: dev_ENV ? 'style-loader' : MiniCssExtractPlugin.loader },
           {
             loader: 'css-loader',
             options: {
@@ -87,7 +95,7 @@ module.exports = {
         test: /\.less$/,
         include: path.resolve(__dirname, '../src'),
         use: [
-          { loader: true ? 'style-loader' : MiniCssExtractPlugin.loader },
+          { loader: dev_ENV ? 'style-loader' : MiniCssExtractPlugin.loader },
           {
             loader: 'css-loader', //  负责读取css文件 放在后面的先被解析
             options: {
@@ -115,7 +123,7 @@ module.exports = {
         include: [/antd/, /antd-mobile/],
         use: [
           {
-            loader: true ? 'style-loader' : MiniCssExtractPlugin.loader,//css内容注入到js里面去 MiniCssExtractPlugin.loader 将css样式统一打包进一个css文件，然后以link标签的形式嵌入页面进行资源请求
+            loader: dev_ENV ? 'style-loader' : MiniCssExtractPlugin.loader,//css内容注入到js里面去 MiniCssExtractPlugin.loader 将css样式统一打包进一个css文件，然后以link标签的形式嵌入页面进行资源请求
             options:{  
               insertAt: 'top'   //嵌入位置，top指顶部，不会覆盖掉html自带的style样式
             }
@@ -221,7 +229,7 @@ module.exports = {
           '@primary-color',
           '@text-color-secondary',
       ],
-      generateOnce:false //是否只生成一次
+      generateOnce: false //是否只生成一次
     })
   ]
 }

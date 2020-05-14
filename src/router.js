@@ -4,8 +4,8 @@ import {
 } from 'react-router-dom';
 import { Provider } from 'react-redux';
 // import store from '@redux/store';
-import Home from '@pages/home';
-import '@static/iconfont.css';
+import Home from '@container/home';
+import './styles/common/iconfont.css';
 
 import configureStore from '@store/configureStore';
 

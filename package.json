@@ -72,7 +72,7 @@
     "webpack-parallel-uglify-plugin": "^1.1.2"
   },
   "dependencies": {
-    "antd": "^3.22.0",
+    "antd": "^4.2.3",
     "antd-mobile": "^2.3.1",
     "axios": "^0.19.0",
     "babel-plugin-react-css-modules": "^5.2.6",
@@ -80,9 +80,9 @@
     "moment": "^2.24.0",
     "normalize.css": "^8.0.1",
     "react": "^16.13.1",
-    "react-dom": "^16.8.6",
-    "react-router": "^5.0.1",
-    "react-router-dom": "^5.0.1",
+    "react-dom": "^16.13.1",
+    "react-router": "^5.2.0",
+    "react-router-dom": "^5.2.0",
     "styled-components": "^4.3.2",
     "uuid": "^3.3.3"
   }

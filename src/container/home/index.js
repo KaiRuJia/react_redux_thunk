@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Steps, Button } from 'antd';
 import { connect } from 'react-redux';
 import { setName, setSex } from '@store/home/action.js';
-import styles from './index.less';
+import './index.less';
 
 const { Step } = Steps;
 
@@ -35,7 +35,7 @@ class Home extends Component {
   render() {
     return (
       <div>
-        <div className={styles['major-fontColor']}>
+        <div styleName="major-fontColor">
           <Button onClick={this.handleClick} type="primary">更换</Button>
         </div>
         <p className="test">测试环境</p>
@@ -48,7 +48,7 @@ class Home extends Component {
           <span className="iconfont iconhanbaobao" />
           {this.props.sex}
         </p>
-        <div className="aaa">aaa</div>
+        <div styleName="aaa">aaa</div>
         <div>
           <Button type="primary" onClick={() => this.props.dispatch(setName('里斯'))}>改变姓名</Button>
         </div>

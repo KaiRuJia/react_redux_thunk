@@ -124,9 +124,6 @@ module.exports = {
         use: [
           {
             loader: dev_ENV ? 'style-loader' : MiniCssExtractPlugin.loader,//css内容注入到js里面去 MiniCssExtractPlugin.loader 将css样式统一打包进一个css文件，然后以link标签的形式嵌入页面进行资源请求
-            options:{  
-              insertAt: 'top'   //嵌入位置，top指顶部，不会覆盖掉html自带的style样式
-            }
           },
           { loader: 'css-loader' },
           { 

@@ -12,6 +12,10 @@ const { RangePicker } = DatePicker;
 class Home extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      themes: process.env.themes,
+      currentLink: null
+    };
   }
 
   componentDidMount() {
@@ -21,24 +25,54 @@ class Home extends Component {
     ];
   }
 
-  handleClick() {
-    window.less.modifyVars(// 更换主题颜色要这么写
-      {
-        '@primary-color': '#1DA57A',
-        '@btn-primary-bg': '#1DA57A'
-      }
-    ).then(() => {
-      console.log('success');
-    }).catch((error) => {
-      console.log(error);
+  remove = (el) => el && el.parentNode.removeChild(el)
+
+  changeTheme = (theme) => {
+    const { currentLink } = this.state;
+    if (theme === (currentLink && currentLink.dataset.theme)) {
+      return;
+    }
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = `./theme-${theme}.css`;
+    link.dataset.theme = theme;
+    document.head.appendChild(link);
+    link.onload = () => {
+      this.removeTheme();
+      this.setState({
+        currentLink: link
+      });
+    };
+  }
+
+  removeTheme = () => {
+    const { currentLink } = this.state;
+    this.remove(currentLink);
+  }
+
+  resetTheme = () => {
+    this.removeTheme();
+    this.setState({
+      currentLink: null
     });
   }
 
+
   render() {
+    const { themes } = this.state;
     return (
-      <div>
-        <div styleName="major-fontColor">
+      <div styleName="major-fontColor">
+        {/* <div styleName="major-fontColor">
           <Button onClick={this.handleClick} type="primary">更换</Button>
+        </div> */}
+        <div>
+          <h1>点击按钮切换主题</h1>
+          <button onClick={this.resetTheme}>default</button>
+          {
+          themes.map((theme) => (
+            <button key={theme} onClick={() => this.changeTheme(theme)}>{theme}</button>
+          ))
+        }
         </div>
         <p className="test">测试环境</p>
         <p>

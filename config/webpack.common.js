@@ -3,13 +3,37 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')//  配置模版html
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin') // css 压缩
 const webpack = require('webpack')
-const AntDesignThemePlugin = require('antd-theme-webpack-plugin');
+const fs = require('fs')
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const dev_ENV = process.env.npm_lifecycle_script.split('--mode=')[1] == 'development'
-// const theme = require(path.resolve(__dirname, '../src/static/comcss/theme.js'))
+
+// 主题路径
+const THEME_PATH = '../src/styles/theme';
+const styleLoaders = [{ loader: 'css-loader' }, { loader: 'less-loader' }];
+
+const resolveToThemeStaticPath = fileName => path.resolve(__dirname, THEME_PATH + '/' +fileName);
+
+const themeFileNameSet = fs.readdirSync(path.resolve(__dirname, THEME_PATH));
+const themePaths = themeFileNameSet.map(resolveToThemeStaticPath);
+process.env.themes = themePaths
+const getThemeName = fileName => `theme-${path.basename(fileName, path.extname(fileName))}`;
+// 全部 ExtractLessS 的集合
+const themesExtractLessSet = themeFileNameSet.map(fileName => new ExtractTextPlugin(`${getThemeName(fileName)}.css`))
+// 主题 Loader 的集合
+const themeLoaderSet = themeFileNameSet.map((fileName, index) => {
+  return {
+    test: /\.(less|css)$/,
+    include: resolveToThemeStaticPath(fileName),
+    loader: themesExtractLessSet[index].extract({
+      use: styleLoaders
+    })
+  }
+});
 
 module.exports = {
   entry:{
     index: path.resolve(__dirname, '../src/index.js'),
+    theme: path.resolve(__dirname, '../src/theme.js')
   },
   output:{
     path: path.resolve(__dirname, '../build'),
@@ -81,6 +105,7 @@ module.exports = {
       },
       { // css
         test: /\.css$/,
+        exclude: path.resolve(__dirname, '../src/styles/theme'),
         use: [
           { loader: dev_ENV ? 'style-loader' : MiniCssExtractPlugin.loader },
           {
@@ -93,7 +118,7 @@ module.exports = {
       },
       { // less
         test: /\.less$/,
-        include: path.resolve(__dirname, '../src'),
+        exclude: [/node_modules/, path.resolve(__dirname, '../src/styles/theme')],
         use: [
           { loader: dev_ENV ? 'style-loader' : MiniCssExtractPlugin.loader },
           {
@@ -167,7 +192,8 @@ module.exports = {
             }
           }//项目设置打包到dist下的fonts文件夹下
        ]
-      }
+      },
+      ...themeLoaderSet
     ]
   },
   optimization: { //优化
@@ -203,6 +229,7 @@ module.exports = {
       inject: true,//所有JavaScript资源插入到body元素的底部
       template: path.resolve('./src', 'index.html'),
       filename: 'index.html',
+      // excludeChunks: ['theme']
       // minify:{ //压缩HTML文件
       //   removeComments:true,    //移除HTML中的注释
       //   collapseWhitespace:true    //删除空白符与换行符
@@ -215,18 +242,9 @@ module.exports = {
         NODE_ENV: JSON.stringify('production'),
       },
     }),
-    new AntDesignThemePlugin({
-      antDir: path.join(__dirname, '../node_modules/antd'),//antd包位置
-      stylesDir: path.join(__dirname, '../src/styles/theme'),//主题文件所在文件夹
-      varFile: path.join(__dirname, '../src/styles/theme/variables.less'),// 自定义默认的主题色
-      indexFileName: '../build/index.html', // index.html所在位置
-      mainLessFile: path.join(__dirname, '../src/styles/theme/index.less'), // 项目中其他自定义的样式（如果不需要动态修改其他样式，该文件可以为空）
-      outputFilePath: path.join(__dirname, '../build/theme/color.less'),//提取的less文件输出到什么地方
-      themeVariables: [ //要改变的主题变
-          '@primary-color',
-          '@text-color-secondary',
-      ],
-      generateOnce: false //是否只生成一次
+    ...themesExtractLessSet,
+    new webpack.DefinePlugin({
+      'process.env.themes': JSON.stringify(themeFileNameSet.map(fileName => fileName.replace('.less', '')))
     })
   ]
 }

@@ -6,6 +6,7 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 module.exports = merge(common,{
     mode:'production',
+    devtool: 'source',
     optimization: {
       splitChunks: {
         cacheGroups: {
@@ -22,9 +23,9 @@ module.exports = merge(common,{
       ],
     },
     plugins:[
-      new MiniCssExtractPlugin({ //此插件将CSS提取到单独的文件中。它为每个包含CSS的JS文件创建一个CSS文件。它支持CSS和SourceMaps的按需加载
-        filename: '[name].[hash].css',
-      }),
+      // new MiniCssExtractPlugin({ //此插件将CSS提取到单独的文件中。它为每个包含CSS的JS文件创建一个CSS文件。它支持CSS和SourceMaps的按需加载
+      //   filename: '[name].[hash].css',
+      // }),
       new ParallelUglifyPlugin({
         uglifyJS: {
           output: {

@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 // import { Button } from 'antd-mobile';
-import { Steps, Button } from 'antd';
+import { Steps, Button, DatePicker } from 'antd';
 import { connect } from 'react-redux';
+import intl from 'react-intl-universal';
 import { setName, setSex } from '@store/home/action.js';
 import './index.less';
 
 const { Step } = Steps;
+const { RangePicker } = DatePicker;
 
 class Home extends Component {
   constructor(props) {
@@ -49,6 +51,11 @@ class Home extends Component {
           {this.props.sex}
         </p>
         <div styleName="aaa">aaa</div>
+        <div>
+          测试国际化：
+          {intl.get('Userpanel')}
+        </div>
+        <RangePicker style={{ width: 200 }} />
         <div>
           <Button type="primary" onClick={() => this.props.dispatch(setName('里斯'))}>改变姓名</Button>
         </div>

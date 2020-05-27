@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title>webpack test</title>
-  <style>
+  <!-- <style>
     @keyframes spinner { to { transform: rotate(1turn) } }
     .loading:before {
       content: ''; box-sizing: border-box; width: 64px; height: 64px;
@@ -11,8 +11,14 @@
       margin: auto; border-radius: 50%; border: 4px solid #f0f0f0;
       border-top-color: #BE0028; animation: spinner .6s linear infinite;
     }
-  </style>
+  </style> -->
   <!-- <link type="image/x-icon" rel="shortcut icon" href="/assets/favicon.ico" /> -->
+  <!--[if lt IE 9]>
+  <script src="//f.alicdn.com/es5-shim/4.5.7/es5-shim.min.js"></script>
+  <![endif]-->
+  <script>
+    if(typeof Promise!=="function"){document.write('<script src="//f.alicdn.com/es6-shim/0.35.1/??es6-shim.min.js,es6-sham.min.js"><\/script>')}
+  </script>
 </head>
 <body class="__body__ loading">
   <link rel="stylesheet/less" type="text/css" href="../build/theme/color.less" /><!--这里link放在哪，style生成在哪里，注意样式被覆盖-->

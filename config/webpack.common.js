@@ -4,7 +4,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin') // css 压缩
 const webpack = require('webpack')
 const fs = require('fs')
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+// const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const dev_ENV = process.env.npm_lifecycle_script.split('--mode=')[1] == 'development'
 
 // 主题路径
@@ -16,24 +16,28 @@ const resolveToThemeStaticPath = fileName => path.resolve(__dirname, THEME_PATH 
 const themeFileNameSet = fs.readdirSync(path.resolve(__dirname, THEME_PATH));
 const themePaths = themeFileNameSet.map(resolveToThemeStaticPath);
 process.env.themes = themePaths
-const getThemeName = fileName => `theme-${path.basename(fileName, path.extname(fileName))}`;
+const getThemeName = fileName => `${path.basename(fileName, path.extname(fileName))}`;
 // 全部 ExtractLessS 的集合
-const themesExtractLessSet = themeFileNameSet.map(fileName => new ExtractTextPlugin(`${getThemeName(fileName)}.css`))
+const themesExtractLessSet = themeFileNameSet.map(fileName => (
+  new MiniCssExtractPlugin({
+    filename: `${getThemeName(fileName)}.css`,
+    chunkFilename: `${getThemeName(fileName)}.css`,
+  })
+))
 // 主题 Loader 的集合
 const themeLoaderSet = themeFileNameSet.map((fileName, index) => {
   return {
     test: /\.(less|css)$/,
     include: resolveToThemeStaticPath(fileName),
-    loader: themesExtractLessSet[index].extract({
-      use: styleLoaders
-    })
+    use: [MiniCssExtractPlugin.loader, 'css-loader', 'less-loader'],
   }
 });
 
 module.exports = {
   entry:{
     index: path.resolve(__dirname, '../src/index.js'),
-    theme: path.resolve(__dirname, '../src/theme.js')
+    dark: path.resolve(__dirname, '../src/themeDark.js'),
+    default: path.resolve(__dirname, '../src/theme.js'),
   },
   output:{
     path: path.resolve(__dirname, '../build'),
@@ -229,7 +233,7 @@ module.exports = {
       inject: true,//所有JavaScript资源插入到body元素的底部
       template: path.resolve('./src', 'index.html'),
       filename: 'index.html',
-      // excludeChunks: ['theme']
+      excludeChunks: ['dark', 'defalut']
       // minify:{ //压缩HTML文件
       //   removeComments:true,    //移除HTML中的注释
       //   collapseWhitespace:true    //删除空白符与换行符
@@ -242,7 +246,10 @@ module.exports = {
         NODE_ENV: JSON.stringify('production'),
       },
     }),
-    ...themesExtractLessSet,
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+      chunkFilename: '[name].css'
+    }),
     new webpack.DefinePlugin({
       'process.env.themes': JSON.stringify(themeFileNameSet.map(fileName => fileName.replace('.less', '')))
     })

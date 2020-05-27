@@ -34,7 +34,7 @@ class Home extends Component {
     }
     const link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = `./theme-${theme}.css`;
+    link.href = `./${theme}.css`;
     link.dataset.theme = theme;
     document.head.appendChild(link);
     link.onload = () => {
@@ -60,6 +60,7 @@ class Home extends Component {
 
   render() {
     const { themes } = this.state;
+    console.log(themes, 'themes');
     return (
       <div styleName="major-fontColor">
         {/* <div styleName="major-fontColor">

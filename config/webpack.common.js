@@ -4,40 +4,16 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin') // css 压缩
 const webpack = require('webpack')
 const fs = require('fs')
-// const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const dev_ENV = process.env.npm_lifecycle_script.split('--mode=')[1] == 'development'
 
 // 主题路径
-const THEME_PATH = '../src/styles/theme';
-const styleLoaders = [{ loader: 'css-loader' }, { loader: 'less-loader' }];
-
-const resolveToThemeStaticPath = fileName => path.resolve(__dirname, THEME_PATH + '/' +fileName);
-
-const themeFileNameSet = fs.readdirSync(path.resolve(__dirname, THEME_PATH));
-const themePaths = themeFileNameSet.map(resolveToThemeStaticPath);
-process.env.themes = themePaths
-const getThemeName = fileName => `${path.basename(fileName, path.extname(fileName))}`;
-// 全部 ExtractLessS 的集合
-const themesExtractLessSet = themeFileNameSet.map(fileName => (
-  new MiniCssExtractPlugin({
-    filename: `${getThemeName(fileName)}.css`,
-    chunkFilename: `${getThemeName(fileName)}.css`,
-  })
-))
-// 主题 Loader 的集合
-const themeLoaderSet = themeFileNameSet.map((fileName, index) => {
-  return {
-    test: /\.(less|css)$/,
-    include: resolveToThemeStaticPath(fileName),
-    use: [MiniCssExtractPlugin.loader, 'css-loader', 'less-loader'],
-  }
-});
+const themeFileNameSet = fs.readdirSync(path.resolve(__dirname, '../src/theme/less'));
 
 module.exports = {
   entry:{
     index: path.resolve(__dirname, '../src/index.js'),
-    dark: path.resolve(__dirname, '../src/themeDark.js'),
-    default: path.resolve(__dirname, '../src/theme.js'),
+    theme1: path.resolve(__dirname, '../src/theme/js/theme1.js'),
+    theme2: path.resolve(__dirname, '../src/theme/js/theme2.js'),
   },
   output:{
     path: path.resolve(__dirname, '../build'),
@@ -55,6 +31,7 @@ module.exports = {
       '@store': path.resolve(__dirname, '../src/store'),
       '@utils': path.resolve(__dirname, '../src/utils'),
       '@styles': path.resolve(__dirname, '../src/styles'),
+      '@theme': path.resolve(__dirname, '../src/theme'),
     },
     modules: ['node_modules'],//webpack 解析模块时应该搜索的目录，
   },
@@ -109,7 +86,7 @@ module.exports = {
       },
       { // css
         test: /\.css$/,
-        exclude: path.resolve(__dirname, '../src/styles/theme'),
+        exclude: path.resolve(__dirname, '../src/theme/less'),
         use: [
           { loader: dev_ENV ? 'style-loader' : MiniCssExtractPlugin.loader },
           {
@@ -122,7 +99,7 @@ module.exports = {
       },
       { // less
         test: /\.less$/,
-        exclude: [/node_modules/, path.resolve(__dirname, '../src/styles/theme')],
+        exclude: [/node_modules/, path.resolve(__dirname, '../src/theme/less')],
         use: [
           { loader: dev_ENV ? 'style-loader' : MiniCssExtractPlugin.loader },
           {
@@ -197,7 +174,20 @@ module.exports = {
           }//项目设置打包到dist下的fonts文件夹下
        ]
       },
-      ...themeLoaderSet
+      {
+        test: /\.(less|css)$/,
+        include: path.resolve(__dirname, '../src/theme/less'),
+        use: [ 
+          MiniCssExtractPlugin.loader, 
+          'css-loader', 
+          { 
+            loader: 'less-loader',
+            options: {
+              javascriptEnabled: true,    //允许通过js调用antd组件
+            }
+          }
+        ],
+      }
     ]
   },
   optimization: { //优化
@@ -228,12 +218,12 @@ module.exports = {
     }
   },
   plugins:[
-    // new CleanWebpackPlugin(),// 删除文件 保留新文件
+    new CleanWebpackPlugin(),// 删除文件 保留新文件
     new HtmlWebpackPlugin({
       inject: true,//所有JavaScript资源插入到body元素的底部
       template: path.resolve('./src', 'index.html'),
       filename: 'index.html',
-      excludeChunks: ['dark', 'defalut']
+      excludeChunks: ['theme1', 'theme2']
       // minify:{ //压缩HTML文件
       //   removeComments:true,    //移除HTML中的注释
       //   collapseWhitespace:true    //删除空白符与换行符
@@ -241,11 +231,6 @@ module.exports = {
       // hash: true, // 会在打包好的bundle.js后面加上hash串,
     }),
     new webpack.HashedModuleIdsPlugin(),
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify('production'),
-      },
-    }),
     new MiniCssExtractPlugin({
       filename: '[name].css',
       chunkFilename: '[name].css'

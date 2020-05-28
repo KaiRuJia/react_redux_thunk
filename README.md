@@ -4,6 +4,7 @@
 3. css-loader启动css module配置: 好处----代码隔离
 
 ---
+### 三种方式的对比
 
 *  css module：在每个样式中都是style.*中的形式比较麻烦
 ```
@@ -16,7 +17,7 @@
 
 ---
 
-> babel-plugin-react-css-modules 配置和使用
+### babel-plugin-react-css-modules 配置和使用
 
 `npm i --save babel-plugin-react-css-modules`
 
